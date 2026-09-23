@@ -1,14 +1,13 @@
 import os
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-
 from dotenv import load_dotenv 
 
-#Cargar las variables de entorno
+# Cargar las variables de entorno
 load_dotenv()
 
-#crear instancia
-app =  Flask(__name__)
+# Crear instancia
+app = Flask(__name__)
 
 # Configuración de la base de datos PostgreSQL
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -16,44 +15,30 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Modelo Categoría
-class Category(db.Model):
-    __tablename__ = 'categories'
+# Modelo Marca
+class Marca(db.Model):
+    __tablename__ = 'marcas'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
+    nombre = db.Column(db.String(50), nullable=False)
 
-# Modelo Post
-class Post(db.Model):
-    __tablename__ = 'posts'
+# Modelo Vehiculo
+class Vehiculo(db.Model):
+    __tablename__ = 'vehiculos'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
-    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
+    marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'))
+    modelo = db.Column(db.String(50))
+    anio = db.Column(db.Integer)
+    precio = db.Column(db.Float) # En PostgreSQL 'double precision' equivale a Float
+    imagen_url = db.Column(db.String(255))
+    
+    # Relación para acceder a la marca desde el vehículo (ej. vehiculo.marca.nombre)
+    marca = db.relationship('Marca', backref=db.backref('vehiculos', lazy=True))
 
-# Ruta para ver todos los posts
+# Ruta para ver todos los vehiculos
 @app.route('/')
 def index():
-    posts = Post.query.all()
-    categories = Category.query.all()
-    return render_template('index.html', posts=posts, categories=categories)
-
-#Ruta /post crear un nuevo post
-@app.route('/post/new', methods=['GET','POST'])
-def add_post():
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-        category_id = request.form.get('category_id')
-        new_post = Post(title=title, content=content, category_id=category_id)
-        db.session.add(new_post)
-        db.session.commit()
-
-        return redirect(url_for('index'))
-    
-    #Aqui sigue si es GET
-    categories = Category.query.all()
-    return render_template('create_post.html', categories=categories)
+    vehiculos = Vehiculo.query.all()
+    return render_template('index.html', vehiculos=vehiculos)
 
 if __name__ == '__main__':
     app.run(debug=True)
