@@ -1,25 +1,39 @@
 {% extends 'base.html' %}
-{% block title%} Blog de Noticias{% endblock %}
+{% block title%} Catálogo de Vehículos {% endblock %}
 {% block content%}
-<div class="columns">
-    <div class="column is-offset-3 is-6">
-		    <a  href="{{ url_for('add_post') }}" class="button is-success"><i class="fa-solid fa-plus"></i> &nbsp; Agregar noticia</a>
-        <br><br>        
-        {% for post in posts %}
+<div class="columns is-multiline">
+    <!-- El botón de agregar lo podemos dejar apuntando a '# ' de momento -->
+    <div class="column is-12">
+        <a href="#" class="button is-success"><i class="fa-solid fa-plus"></i> &nbsp; Agregar vehículo</a>
+    </div>
+
+    {% for vehiculo in vehiculos %}
+    <div class="column is-4">
         <div class="card">
+            {% if vehiculo.imagen_url %}
+            <div class="card-image">
+                <figure class="image is-4by3">
+                    <!-- Muestra la imagen si la URL existe en la base de datos -->
+                    <img src="{{ vehiculo.imagen_url }}" alt="Imagen de {{ vehiculo.modelo }}" style="object-fit: cover;">
+                </figure>
+            </div>
+            {% endif %}
             <div class="card-content">
                 <div class="media">
                     <div class="media-content">
-                        <p class="title is-4">{{ post.title }}</p>
-                        <p class="subtitle is-5">{{ post.category.name }}</p>
+                        <p class="title is-4">{{ vehiculo.marca.nombre }} {{ vehiculo.modelo }}</p>
                     </div>
                 </div>
                 <div class="content">
-                    {{ post.content }}
+                    <div class="tags">
+                        <span class="tag is-info is-light">Año: {{ vehiculo.anio }}</span>
+                        <span class="tag is-success is-light">Precio: ${{ vehiculo.precio }}</span>
+                        <span class="tag is-dark">{{ vehiculo.marca.nombre }}</span>
                     </div>
+                </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>
 {% endblock%}
