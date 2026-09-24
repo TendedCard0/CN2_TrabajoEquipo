@@ -1,20 +1,86 @@
 <!DOCTYPE html>
-<html class="theme-light" style="background-color: gainsboro;">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Catálogo de Vehículos{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/ee9903c79f.js" crossorigin="anonymous"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    boxShadow: {
+                        card: '0 20px 50px rgba(0, 0, 0, 0.15)'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-  <body >
-    <header>
-        <br>
-        <h1 class="title has-text-centered is-1">Catálogo de Vehículos</h1>
-        <hr>
-    </header>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-  </body>
+
+<body class="min-h-screen bg-slate-100 text-slate-900">
+
+    <!-- NAVBAR -->
+    <nav class="bg-slate-950 text-white shadow-lg">
+
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+
+            <!-- LOGO -->
+            <a href="{{ url_for('index') }}" class="flex items-center gap-3">
+
+                <div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-car text-xl"></i>
+                </div>
+
+                <div>
+                    <h1 class="font-bold text-xl leading-none">
+                        Auto<span class="text-blue-500">Market</span>
+                    </h1>
+
+                    <p class="text-xs text-slate-400 mt-1">
+                        Catálogo de vehículos
+                    </p>
+                </div>
+
+            </a>
+
+
+            
+
+        </div>
+
+    </nav>
+
+
+    <!-- CONTENIDO -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="mt-16 border-t border-slate-200">
+
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center text-sm text-slate-500">
+
+            <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-car"></i>
+                Catálogo de Vehículos
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
 </html>
