@@ -40,5 +40,30 @@ def index():
     vehiculos = Vehiculo.query.all()
     return render_template('index.html', vehiculos=vehiculos)
 
+
+@app.route('/vehiculos/<int:id>/editar', methods=['GET', 'POST'])
+def editar_vehiculo(id):
+
+    vehiculo = Vehiculo.query.get_or_404(id)
+    marcas = Marca.query.order_by(Marca.nombre).all()
+
+    if request.method == 'POST':
+
+        vehiculo.marca_id = request.form['marca_id']
+        vehiculo.modelo = request.form['modelo']
+        vehiculo.anio = request.form['anio']
+        vehiculo.precio = request.form['precio']
+        vehiculo.imagen_url = request.form.get('imagen_url')
+
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+    return render_template(
+        'editar.html',
+        vehiculo=vehiculo,
+        marcas=marcas
+    )
+
 if __name__ == '__main__':
     app.run(debug=True)
