@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Editar vehículo{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto">
+<a href="{{ url_for('index') }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 transition mb-6">
+<i class="fa-solid fa-arrow-left"></i> Regresar al catálogo
+</a>
+<div class="mb-8">
+<span class="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm mb-2">
+<i class="fa-solid fa-pen"></i> EDITAR VEHÍCULO
+</span>
+<h1 class="text-4xl font-black text-slate-950">{{ vehiculo.marca.nombre }} {{ vehiculo.modelo }}</h1>
+<p class="text-slate-500 mt-2">Modifica la información del vehículo.</p>
+</div>
+<form method="POST" action="{{ url_for('editar_vehiculo', id=vehiculo.id) }}" class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+<div class="p-8 space-y-5">
+<div>
+<label for="marca_id" class="block text-sm font-bold text-slate-700 mb-2">Marca</label>
+<select id="marca_id" name="marca_id" required class="w-full border border-slate-300 rounded-xl px-4 py-3 bg-white outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+{% for marca in marcas %}
+<option value="{{ marca.id }}" {% if marca.id == vehiculo.marca_id %}selected{% endif %}>{{ marca.nombre }}</option>
+{% endfor %}
+</select>
+</div>
+<div>
+<label for="modelo" class="block text-sm font-bold text-slate-700 mb-2">Modelo</label>
+<input type="text" id="modelo" name="modelo" value="{{ vehiculo.modelo }}" maxlength="50" required class="w-full border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div>
+<label for="anio" class="block text-sm font-bold text-slate-700 mb-2">Año</label>
+<input type="number" id="anio" name="anio" value="{{ vehiculo.anio }}" min="1900" max="2100" required class="w-full border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+</div>
+<div>
+<label for="precio" class="block text-sm font-bold text-slate-700 mb-2">Precio</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+<input type="number" id="precio" name="precio" value="{{ vehiculo.precio }}" min="0" step="0.01" required class="w-full border border-slate-300 rounded-xl py-3 pl-8 pr-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+</div>
+</div>
+</div>
+<div>
+<label for="imagen_url" class="block text-sm font-bold text-slate-700 mb-2">URL de imagen</label>
+<input type="url" id="imagen_url" name="imagen_url" value="{{ vehiculo.imagen_url or '' }}" placeholder="https://ejemplo.com/carro.jpg" class="w-full border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">Vista previa</label>
+<div class="h-64 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+<img id="previewImagen" src="{{ vehiculo.imagen_url or '' }}" alt="{{ vehiculo.modelo }}" class="{% if not vehiculo.imagen_url %}hidden {% endif %}w-full h-full object-cover">
+<div id="sinImagen" class="{% if vehiculo.imagen_url %}hidden{% else %}flex{% endif %} w-full h-full items-center justify-center text-slate-400">
+<div class="text-center">
+<i class="fa-solid fa-car text-5xl"></i>
+<p class="text-sm mt-2">Sin imagen</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-slate-200 bg-slate-50 px-8 py-5 flex justify-end gap-3">
+<a href="{{ url_for('index') }}" class="px-6 py-3 border border-slate-300 rounded-xl font-semibold text-slate-700 hover:bg-slate-100 transition">Cancelar</a>
+<button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition">
+<i class="fa-solid fa-floppy-disk mr-2"></i>Guardar cambios
+</button>
+</div>
+</form>
+</div>
+<script>
+const inputImagen=document.getElementById('imagen_url');
+const previewImagen=document.getElementById('previewImagen');
+const sinImagen=document.getElementById('sinImagen');
+inputImagen.addEventListener('input',function(){
+const url=this.value.trim();
+if(url){
+previewImagen.src=url;
+previewImagen.classList.remove('hidden');
+sinImagen.classList.add('hidden');
+sinImagen.classList.remove('flex');
+}else{
+previewImagen.src='';
+previewImagen.classList.add('hidden');
+sinImagen.classList.remove('hidden');
+sinImagen.classList.add('flex');
+}
+});
+previewImagen.addEventListener('error',function(){
+previewImagen.classList.add('hidden');
+sinImagen.classList.remove('hidden');
+sinImagen.classList.add('flex');
+});
+previewImagen.addEventListener('load',function(){
+if(inputImagen.value.trim()){
+previewImagen.classList.remove('hidden');
+sinImagen.classList.add('hidden');
+}
+});
+</script>
+{% endblock %}
