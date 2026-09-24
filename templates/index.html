@@ -254,43 +254,52 @@ Catálogo de Vehículos
 
 
 
-            <!-- PRECIO -->
+            <!-- PRECIO Y ACCIONES -->
             <div class="border-t border-slate-100 pt-5 flex items-end justify-between gap-4">
 
-
                 <div>
-
                     <p class="text-xs text-slate-400 mb-1">
                         Precio
                     </p>
-
                     <p class="text-2xl font-black text-slate-950">
-
                         ${{ "{:,.2f}".format(vehiculo.precio) }}
-
                     </p>
-
                 </div>
 
+                <!-- ACCIONES -->
+                <div class="flex gap-2">
+                    
+                    <!-- ELIMINAR -->
+                    <form action="{{ url_for('eliminar_vehiculo', id=vehiculo.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">
+                        <button
+                            type="submit"
+                            class="w-12 h-12
+                                   bg-red-50 text-red-500 hover:bg-red-500 hover:text-white
+                                   rounded-2xl
+                                   flex items-center justify-center
+                                   transition"
+                            title="Eliminar vehículo"
+                        >
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </form>
 
-
-                <!-- VER -->
-                <a
-                    href="#"
-                    class="w-12 h-12
-                           bg-slate-950 hover:bg-blue-600
-                           text-white rounded-2xl
-                           flex items-center justify-center
-                           transition group/boton"
-                >
-
-                    <i class="fa-solid fa-arrow-right
-                              group-hover/boton:translate-x-1
-                              transition">
-                    </i>
-
-                </a>
-
+                    <!-- VER -->
+                    <a
+                        href="#"
+                        class="w-12 h-12
+                               bg-slate-950 hover:bg-blue-600
+                               text-white rounded-2xl
+                               flex items-center justify-center
+                               transition group/boton"
+                        title="Ver detalles"
+                    >
+                        <i class="fa-solid fa-arrow-right
+                                  group-hover/boton:translate-x-1
+                                  transition">
+                        </i>
+                    </a>
+                </div>
 
             </div>
 

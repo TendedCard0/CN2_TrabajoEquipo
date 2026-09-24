@@ -40,5 +40,22 @@ def index():
     vehiculos = Vehiculo.query.all()
     return render_template('index.html', vehiculos=vehiculos)
 
+@app.route('/eliminar/<int:id>', methods=['POST'])
+def eliminar_vehiculo(id):
+    # Buscar el vehículo por su ID
+    vehiculo = Vehiculo.query.get_or_404(id)
+    
+    try:
+        # Eliminar el vehículo de la base de datos
+        db.session.delete(vehiculo)
+        db.session.commit()
+    except Exception as e:
+        # En caso de error, puedes imprimirlo para depurar
+        print(f"Error al eliminar: {e}")
+        db.session.rollback()
+        
+    # Redirigir de vuelta al index
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)
