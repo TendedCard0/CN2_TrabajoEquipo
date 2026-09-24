@@ -1,39 +1,544 @@
 {% extends 'base.html' %}
-{% block title%} Catálogo de Vehículos {% endblock %}
-{% block content%}
-<div class="columns is-multiline">
-    <!-- El botón de agregar lo podemos dejar apuntando a '# ' de momento -->
-    <!--<div class="column is-12">
-        <a href="#" class="button is-success"><i class="fa-solid fa-plus"></i> &nbsp; Agregar vehículo</a>
-    </div>-->
+
+{% block title %}
+Catálogo de Vehículos
+{% endblock %}
+
+{% block content %}
+
+
+<!-- ENCABEZADO -->
+<section class="mb-10">
+
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+
+        <!-- TÍTULO -->
+        <div>
+
+            <span class="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm mb-3">
+                <i class="fa-solid fa-car-side"></i>
+                NUESTRO CATÁLOGO
+            </span>
+
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-950">
+
+                Encuentra tu próximo
+
+                <span class="text-blue-600">
+                    vehículo.
+                </span>
+
+            </h2>
+
+            <p class="text-slate-500 mt-4 max-w-2xl text-lg">
+                Explora los vehículos disponibles y encuentra el que mejor se adapte a ti.
+            </p>
+
+        </div>
+
+
+        <!-- BUSCADOR -->
+        <div class="relative w-full lg:w-96">
+
+            <i class="fa-solid fa-magnifying-glass
+                      absolute left-4 top-1/2 -translate-y-1/2
+                      text-slate-400">
+            </i>
+
+            <input
+                type="text"
+                id="buscador"
+                placeholder="Buscar marca, modelo o año..."
+                autocomplete="off"
+                class="w-full bg-white border border-slate-200
+                       rounded-2xl py-3.5 pl-11 pr-11 outline-none
+                       focus:border-blue-500
+                       focus:ring-4 focus:ring-blue-100
+                       transition shadow-sm"
+            >
+
+            <!-- LIMPIAR -->
+            <button
+                id="limpiarBusqueda"
+                type="button"
+                class="hidden absolute right-4 top-1/2 -translate-y-1/2
+                       text-slate-400 hover:text-slate-900 transition"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INFORMACIÓN DEL CATÁLOGO -->
+<div class="flex items-center justify-between mb-6">
+
+    <p class="text-sm text-slate-500">
+
+        Mostrando
+
+        <span
+            id="contadorVehiculos"
+            class="font-bold text-slate-900"
+        >
+            {{ vehiculos|length }}
+        </span>
+
+        vehículos
+
+    </p>
+
+
+    <div class="flex items-center gap-2 text-sm text-slate-500">
+
+        <i class="fa-solid fa-table-cells-large"></i>
+
+        Catálogo
+
+    </div>
+
+</div>
+
+
+
+<!-- GRID -->
+<div
+    id="contenedorVehiculos"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"
+>
 
     {% for vehiculo in vehiculos %}
-    <div class="column is-4">
-        <div class="card">
+
+
+    <!-- TARJETA -->
+    <article
+        class="vehiculo-card group bg-white rounded-3xl
+               overflow-hidden border border-slate-200
+               hover:-translate-y-2 hover:shadow-card
+               transition duration-300"
+
+        data-marca="{{ vehiculo.marca.nombre }}"
+        data-modelo="{{ vehiculo.modelo }}"
+        data-anio="{{ vehiculo.anio }}"
+    >
+
+
+        <!-- IMAGEN -->
+        <div class="relative h-60 bg-slate-200 overflow-hidden">
+
             {% if vehiculo.imagen_url %}
-            <div class="card-image">
-                <figure class="image is-4by3">
-                    <!-- Muestra la imagen si la URL existe en la base de datos -->
-                    <img src="{{ vehiculo.imagen_url }}" alt="Imagen de {{ vehiculo.modelo }}" style="object-fit: cover;">
-                </figure>
+
+            <img
+                src="{{ vehiculo.imagen_url }}"
+                alt="{{ vehiculo.marca.nombre }} {{ vehiculo.modelo }}"
+                class="w-full h-full object-cover
+                       group-hover:scale-105
+                       transition duration-500"
+            >
+
+            {% else %}
+
+            <!-- SIN IMAGEN -->
+            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400">
+
+                <i class="fa-solid fa-car text-6xl mb-3"></i>
+
+                <span class="text-sm">
+                    Sin imagen
+                </span>
+
             </div>
+
             {% endif %}
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-content">
-                        <p class="title is-4">{{ vehiculo.marca.nombre }} {{ vehiculo.modelo }}</p>
-                    </div>
-                </div>
-                <div class="content">
-                    <div class="tags">
-                        <span class="tag is-info is-light">Año: {{ vehiculo.anio }}</span>
-                        <span class="tag is-success is-light">Precio: ${{ vehiculo.precio }}</span>
-                        <span class="tag is-dark">{{ vehiculo.marca.nombre }}</span>
-                    </div>
-                </div>
+
+
+
+            <!-- AÑO -->
+            <div class="absolute top-4 left-4">
+
+                <span class="bg-white/95 backdrop-blur
+                             px-3 py-1.5 rounded-xl
+                             text-sm font-bold text-slate-900
+                             shadow">
+
+                    {{ vehiculo.anio }}
+
+                </span>
+
             </div>
+
+
+
+            <!-- FAVORITO -->
+            <button
+                type="button"
+                class="favorito absolute top-4 right-4
+                       w-10 h-10 rounded-full bg-white/95
+                       flex items-center justify-center
+                       text-slate-600
+                       hover:text-red-500
+                       hover:scale-110
+                       transition shadow"
+            >
+
+                <i class="fa-regular fa-heart"></i>
+
+            </button>
+
         </div>
-    </div>
+
+
+
+        <!-- INFORMACIÓN -->
+        <div class="p-6">
+
+
+            <!-- MARCA / DISPONIBLE -->
+            <div class="flex items-center justify-between mb-2">
+
+                <span class="text-xs font-bold tracking-widest uppercase text-blue-600">
+
+                    {{ vehiculo.marca.nombre }}
+
+                </span>
+
+
+                <span class="flex items-center gap-1 text-xs text-slate-400">
+
+                    <i class="fa-solid fa-circle-check text-green-500"></i>
+
+                    Disponible
+
+                </span>
+
+            </div>
+
+
+
+            <!-- MODELO -->
+            <h3 class="text-2xl font-black text-slate-950 mb-5">
+
+                {{ vehiculo.modelo }}
+
+            </h3>
+
+
+
+            <!-- INFORMACIÓN -->
+            <div class="flex items-center gap-5 text-sm text-slate-500 mb-6">
+
+
+                <span class="flex items-center gap-2">
+
+                    <i class="fa-solid fa-calendar text-slate-400"></i>
+
+                    {{ vehiculo.anio }}
+
+                </span>
+
+
+                <span class="flex items-center gap-2">
+
+                    <i class="fa-solid fa-tag text-slate-400"></i>
+
+                    {{ vehiculo.marca.nombre }}
+
+                </span>
+
+
+            </div>
+
+
+
+            <!-- PRECIO -->
+            <div class="border-t border-slate-100 pt-5 flex items-end justify-between gap-4">
+
+
+                <div>
+
+                    <p class="text-xs text-slate-400 mb-1">
+                        Precio
+                    </p>
+
+                    <p class="text-2xl font-black text-slate-950">
+
+                        ${{ "{:,.2f}".format(vehiculo.precio) }}
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- VER -->
+                <a
+                    href="#"
+                    class="w-12 h-12
+                           bg-slate-950 hover:bg-blue-600
+                           text-white rounded-2xl
+                           flex items-center justify-center
+                           transition group/boton"
+                >
+
+                    <i class="fa-solid fa-arrow-right
+                              group-hover/boton:translate-x-1
+                              transition">
+                    </i>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </article>
+
+
     {% endfor %}
+
 </div>
-{% endblock%}
+
+
+
+<!-- SIN RESULTADOS DE BÚSQUEDA -->
+<div
+    id="sinResultados"
+    class="hidden py-20 text-center"
+>
+
+    <div class="w-20 h-20 mx-auto bg-slate-200
+                rounded-full flex items-center justify-center mb-5">
+
+        <i class="fa-solid fa-magnifying-glass
+                  text-3xl text-slate-400">
+        </i>
+
+    </div>
+
+
+    <h3 class="text-xl font-bold text-slate-900">
+
+        No encontramos vehículos
+
+    </h3>
+
+
+    <p class="text-slate-500 mt-2">
+
+        Intenta buscar otra marca, modelo o año.
+
+    </p>
+
+</div>
+
+
+
+<!-- SI LA BASE DE DATOS ESTÁ VACÍA -->
+{% if not vehiculos %}
+
+<div class="py-20 text-center">
+
+    <div class="w-20 h-20 mx-auto bg-slate-200
+                rounded-full flex items-center justify-center mb-5">
+
+        <i class="fa-solid fa-car
+                  text-3xl text-slate-400">
+        </i>
+
+    </div>
+
+
+    <h3 class="text-xl font-bold text-slate-900">
+
+        No hay vehículos registrados
+
+    </h3>
+
+
+    <p class="text-slate-500 mt-2">
+
+        Agrega vehículos para comenzar a llenar el catálogo.
+
+    </p>
+
+</div>
+
+{% endif %}
+
+
+
+<!-- JAVASCRIPT -->
+<script>
+
+    const buscador = document.getElementById('buscador');
+
+    const tarjetas = document.querySelectorAll('.vehiculo-card');
+
+    const contador = document.getElementById('contadorVehiculos');
+
+    const sinResultados = document.getElementById('sinResultados');
+
+    const limpiarBusqueda = document.getElementById('limpiarBusqueda');
+
+
+    // Normalizar texto
+    // Permite que búsquedas como "nissan" y "Nissan"
+    // funcionen igual.
+    function normalizarTexto(texto) {
+
+        return texto
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+
+    }
+
+
+
+    // BUSCAR VEHÍCULOS
+    function buscarVehiculos() {
+
+        const texto = normalizarTexto(buscador.value);
+
+        let encontrados = 0;
+
+
+        tarjetas.forEach(function(tarjeta) {
+
+            const marca = normalizarTexto(
+                tarjeta.dataset.marca || ''
+            );
+
+            const modelo = normalizarTexto(
+                tarjeta.dataset.modelo || ''
+            );
+
+            const anio = normalizarTexto(
+                tarjeta.dataset.anio || ''
+            );
+
+
+            // Texto completo
+            const informacionVehiculo =
+                marca + ' ' +
+                modelo + ' ' +
+                anio;
+
+
+            // Comprobar coincidencia
+            const coincide =
+                informacionVehiculo.includes(texto);
+
+
+            if (coincide) {
+
+                tarjeta.classList.remove('hidden');
+
+                encontrados++;
+
+            } else {
+
+                tarjeta.classList.add('hidden');
+
+            }
+
+        });
+
+
+
+        // ACTUALIZAR CONTADOR
+        contador.textContent = encontrados;
+
+
+
+        // MOSTRAR X PARA LIMPIAR
+        if (texto !== '') {
+
+            limpiarBusqueda.classList.remove('hidden');
+
+        } else {
+
+            limpiarBusqueda.classList.add('hidden');
+
+        }
+
+
+
+        // SIN RESULTADOS
+        if (encontrados === 0 && tarjetas.length > 0) {
+
+            sinResultados.classList.remove('hidden');
+
+        } else {
+
+            sinResultados.classList.add('hidden');
+
+        }
+
+    }
+
+
+
+    // BUSCAR MIENTRAS ESCRIBE
+    buscador.addEventListener('input', buscarVehiculos);
+
+
+
+    // LIMPIAR BÚSQUEDA
+    limpiarBusqueda.addEventListener('click', function() {
+
+        buscador.value = '';
+
+        buscarVehiculos();
+
+        buscador.focus();
+
+    });
+
+
+
+    // FAVORITOS
+    const botonesFavorito = document.querySelectorAll('.favorito');
+
+
+    botonesFavorito.forEach(function(boton) {
+
+        boton.addEventListener('click', function() {
+
+            const icono = boton.querySelector('i');
+
+
+            if (icono.classList.contains('fa-regular')) {
+
+                icono.classList.remove('fa-regular');
+
+                icono.classList.add(
+                    'fa-solid',
+                    'text-red-500'
+                );
+
+            } else {
+
+                icono.classList.remove(
+                    'fa-solid',
+                    'text-red-500'
+                );
+
+                icono.classList.add('fa-regular');
+
+            }
+
+        });
+
+    });
+
+</script>
+
+
+{% endblock %}
